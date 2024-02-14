@@ -50,7 +50,7 @@ extern "C" {
 #define UVC_VERSION                                   0x0110U      /* UVC 1.1 */
 #endif
 
-//#define USBD_UVC_FORMAT_UNCOMPRESSED 1
+#define USBD_UVC_FORMAT_UNCOMPRESSED 1
 
 #ifdef USBD_UVC_FORMAT_UNCOMPRESSED
 #ifndef UVC_WIDTH
