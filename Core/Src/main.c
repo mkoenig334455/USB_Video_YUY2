@@ -1433,7 +1433,17 @@ uint16_t tImagesSizes[] = {IMAGE1_SIZE, IMAGE2_SIZE};
 
 
 
- uint8_t restartusb;
+ typedef enum
+ {
+  UVC_STS_INIT = 0,
+  UVC_STS_WAIT_CAMSTART = 1,
+  UVC_STS_WAIT_CAMSTOPP = 2,
+ }eUVC_Status;
+ eUVC_Status UVC_Status = UVC_STS_INIT;
+ extern uint8_t USBD_VIDEO_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx);
+ extern uint8_t USBD_VIDEO_DeInit(USBD_HandleTypeDef *pdev, uint8_t cfgidx);
+ extern uint8_t USBD_VIDEO_SOF(USBD_HandleTypeDef *pdev);
+
 
 /* USER CODE END 0 */
 
@@ -1474,6 +1484,29 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		switch (UVC_Status)
+		{
+			case UVC_STS_INIT:
+				//MX_USB_DEVICE_Init();
+				UVC_Status = UVC_STS_WAIT_CAMSTART;
+				break;
+			case UVC_STS_WAIT_CAMSTART:
+				if (USBD_VIDEO_Instance.uvc_state == UVC_PLAY_STATUS_READY)
+				{
+					USBD_VIDEO_SOF(&hUsbDevice);
+					UVC_Status = UVC_STS_WAIT_CAMSTOPP;
+				}
+				break;
+			case UVC_STS_WAIT_CAMSTOPP:
+				if (USBD_VIDEO_Instance.uvc_state == UVC_PLAY_STATUS_STOP)
+				{
+					USBD_VIDEO_DeInit(&hUsbDevice,0);
+					USBD_VIDEO_Init(&hUsbDevice,0);
+					UVC_Status = UVC_STS_INIT;
+				}
+				break;
+
+		}//sw
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

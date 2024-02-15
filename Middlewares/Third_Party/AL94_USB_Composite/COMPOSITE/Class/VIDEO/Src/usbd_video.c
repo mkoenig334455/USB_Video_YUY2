@@ -93,15 +93,15 @@ uint8_t UVC_STR_DESC_IDX = _UVC_STR_DESC_IDX;
   */
 
 /* VIDEO Device library callbacks */
-static uint8_t USBD_VIDEO_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx);
-static uint8_t USBD_VIDEO_DeInit(USBD_HandleTypeDef *pdev, uint8_t cfgidx);
+extern uint8_t USBD_VIDEO_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx);//user modify
+extern uint8_t USBD_VIDEO_DeInit(USBD_HandleTypeDef *pdev, uint8_t cfgidx);//user modify
 static uint8_t USBD_VIDEO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req);
 static uint8_t *USBD_VIDEO_GetFSCfgDesc(uint16_t *length);
 static uint8_t *USBD_VIDEO_GetHSCfgDesc(uint16_t *length);
 static uint8_t *USBD_VIDEO_GetOtherSpeedCfgDesc(uint16_t *length);
 static uint8_t *USBD_VIDEO_GetDeviceQualifierDesc(uint16_t *length);
 static uint8_t USBD_VIDEO_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum);
-static uint8_t USBD_VIDEO_SOF(USBD_HandleTypeDef *pdev);
+extern uint8_t USBD_VIDEO_SOF(USBD_HandleTypeDef *pdev);//user modify
 static uint8_t USBD_VIDEO_IsoINIncomplete(USBD_HandleTypeDef *pdev, uint8_t epnum);
 
 /* VIDEO Requests management functions */
@@ -386,7 +386,7 @@ static USBD_VideoControlTypeDef video_Probe_Control =
   * @param  cfgidx: Configuration index
   * @retval status
   */
-static uint8_t USBD_VIDEO_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
+ uint8_t USBD_VIDEO_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)//user modify
 {
   USBD_VIDEO_HandleTypeDef *hVIDEO;
 
@@ -439,7 +439,7 @@ static uint8_t USBD_VIDEO_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
   * @param  cfgidx: Configuration index
   * @retval status
   */
-static uint8_t USBD_VIDEO_DeInit(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
+ uint8_t USBD_VIDEO_DeInit(USBD_HandleTypeDef *pdev, uint8_t cfgidx)//user modify
 {
   UNUSED(cfgidx);
 
@@ -553,7 +553,6 @@ static uint8_t USBD_VIDEO_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *
             /* Start Streaming (First endpoint writing will be done on next SOF) */
             (void)USBD_LL_FlushEP(pdev, UVC_IN_EP);
             hVIDEO->uvc_state = UVC_PLAY_STATUS_READY;
-            USBD_VIDEO_SOF(pdev); //user modify
           }
           else
           {
@@ -676,7 +675,7 @@ static uint8_t USBD_VIDEO_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
   * @param  pdev: device instance
   * @retval status
   */
-static uint8_t USBD_VIDEO_SOF(USBD_HandleTypeDef *pdev)
+ uint8_t USBD_VIDEO_SOF(USBD_HandleTypeDef *pdev)//user modify
 {
   USBD_VIDEO_HandleTypeDef *hVIDEO = (USBD_VIDEO_HandleTypeDef *)pdev->pClassData_UVC;
   uint8_t payload[2] = {0x02U, 0x00U};
